@@ -473,6 +473,12 @@
                         });
                 },
                 runTSP: async function () {
+                    let mapContainer = document.getElementById('plotMap');
+                    // si existe el contenedor del mapa, eliminarlo
+                    if (mapContainer) {
+                        mapContainer.remove();
+                    }
+
                     this.results = [];
                     console.log('Running TSP with:', this.tspParams);
                     this.page = 'loader';
@@ -510,10 +516,11 @@
                         };
                     });
 
-                    // Seleccionar el contenedor del mapa
                     let mapContainer = document.getElementById('plotMap');
-                    // eliminar todo dentro de mapContainer
-                    mapContainer.remove();
+                    // si existe el contenedor del mapa, eliminarlo
+                    if (mapContainer) {
+                        mapContainer.remove();
+                    }
                     // crear un nuevo contenedor '<div class="container" id="plotMap" style="height: 400px;"></div>'                    
                     let newMapContainer = document.createElement('div');
                     newMapContainer.setAttribute('id', 'plotMap');
