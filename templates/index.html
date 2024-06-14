@@ -274,7 +274,7 @@
 
                     </div>
                     <!-- RESULTS -->
-                    <div class="col col-8">
+                    <div class="col col-md-9 col-lg-9">
                         <!-- crear un .card que sea del tamaño del contenedor -->
                         <div class="card">
                             <div class="card-body">
@@ -292,15 +292,19 @@
                                 </div>
                                 <!-- show results -->
                                 <div v-if="results.length>0" class="row">
-                                    <div class="row">
-                                        <code>
-                                            {{ results }}
-                                        </code>
+                                    <div v-for="result in results" class="col-12">
+                                        <div class="alert alert-success" role="alert">
+                                            <h4 class="alert-heading">Resultado</h4>
+                                            <p>Distancia total: {{ result.distance }}</p>
+                                            <p>Ruta:</p>
+                                            <p>
+                                                <span v-for="city in result.route">
+                                                    {{ data_selected[city].estado }}-{{ data_selected[city].nombre_recinto }}  ==> 
+                                                </span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <hr>
-                                    <div class="row">
-                                        <code> {{ data_selected }} </code>
-                                    </div>                                    
+                                                              
                                 </div>
                             </div>
 
