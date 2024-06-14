@@ -33,7 +33,7 @@
 <body>
     <div id="app" class="container-fluid">
         <!-- NAVBAR -->
-        <header>
+        <header style="margin-bottom: 12vh;">
             <nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">App | TSP México </a>
@@ -292,6 +292,7 @@
                                 </div>
                                 <!-- show results -->
                                 <div v-if="results.length>0" class="row">
+                                    <!-- show each result -->
                                     <div v-for="result in results" class="col-12">
                                         <div class="alert alert-success" role="alert">
                                             <h4 class="alert-heading">Resultado</h4>
@@ -415,8 +416,9 @@
                     })
 
                 },
-                changeTspChoosen: function (tsp) {
+                changeTspChoosen: function (tsp) {                    
                     this.page = 'tsp_selection';
+                    this.results = [];
                     this.tspChoosen = this.tspOptions[tsp];
 
                     if (this.tspChoosen.key == 'cities')
