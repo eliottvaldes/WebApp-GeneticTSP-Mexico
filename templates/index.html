@@ -51,7 +51,7 @@
         <header style="margin-bottom: 12vh;">
             <nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">App | TSP México </a>
+                    <a class="navbar-brand" @click="page='welcomePage'">App | TSP México </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -161,19 +161,29 @@
 
                 <!-- WELCOME PAGE -->
                 <div v-if="page=='welcomePage'">
-                    <div class="row mb-5">
-                        <h3 class="text-center">
-                            Bienvenido a la aplicación
-                        </h3>
-                    </div>
+                    
                     <div class="row">
                         <div class="col-12">
                             <div class="card shadow p-3 mb-5">
-                                <div class="card-body text-center">
-                                    <h3>¡Bienvenido!</h3>
-                                    <p>Esta es una aplicación de ejemplo para el problema del vendedor viajero (TSP) en
-                                        México.</p>
-                                    <p>Selecciona una de las opciones del menú para comenzar.</p>
+                                <div class="card-body text-center">                                                  
+                                    <div class="row justify-content-around">
+                                        
+                                        <div class="col col-12 col-md-4 col-lg-4 mt-3 align-self-center">
+                                            <h3>¡Bienvenido!</h3>
+                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut eveniet porro aliquid aspernatur nihil autem voluptas provident quod unde voluptates. Tempore nemo eaque eos facilis tenetur! At autem quia iure.
+                                        </div>
+                                        <div class="col col-12 col-md-7 col-lg-7 mt-3">
+                                            <picture>
+                                                <source srcset="../static/images/background.webp" type="image/svg+xml" />
+                                                <img
+                                                    src="../static/images/background.webp"
+                                                    class="img-fluid rounded"
+                                                    alt="image desc"                                                    
+                                                />
+                                            </picture>
+                                            
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -194,26 +204,16 @@
                                 <!-- permutations -->
                                 <div class="mb-4 row">
                                     <label for="permutations" class="form-label">
-                                        Cantidad de permutaciones
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill "
-                                            data-bs-toggle="popover" title="Cantidad de permutaciones"
-                                            data-bs-content="Especifica la cantidad de soluciones iniciales a generar. Un número mayor puede mejorar la calidad de la solución final pero aumentará el tiempo de cómputo.">
-                                            i
-                                        </button>
+                                        Tamaño de población                                         
                                     </label>
                                     <input v-model="tspParams.population_size" type="number" inputmode="numeric"
-                                        name="permutations" id="permutations" class="form-control"
-                                        aria-describedby="permutationsHelp" min="50" max="500" step="1" />
+                                        class="form-control" min="50" max="500" step="1" />
                                 </div>
 
                                 <!-- mutaion_prob -->
                                 <div class="mb-4 row">
-                                    <label for="mutationProbability" class="form-label">Probabilidad de mutación
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Probabilidad de mutación"
-                                            data-bs-content="Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.01 y 0.1.">
-                                            i
-                                        </button>
+                                    <label for="mutationProbability" class="form-label">
+                                        Probabilidad de mutación
                                     </label>
                                     <input v-model="tspParams.mutation_prob" type="range" class="form-range"
                                         name="mutationProbability" id="mutationProbability"
@@ -225,12 +225,8 @@
 
                                 <!-- generations -->
                                 <div class="mb-4 row">
-                                    <label for="generations" class="form-label">Cantidad de generaciones
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Cantidad de generaciones"
-                                            data-bs-content="Indica el número total de generaciones que el algoritmo evolucionará buscando la solución óptima. Un número mayor permite una búsqueda más exhaustiva.">
-                                            i
-                                        </button>
+                                    <label for="generations" class="form-label">
+                                        Cantidad de generaciones
                                     </label>
                                     <input v-model="tspParams.generations" type="number" inputmode="numeric"
                                         name="generations" id="generations" class="form-control"
@@ -239,12 +235,8 @@
 
                                 <!-- start_city -->
                                 <div class="mb-4 row">
-                                    <label for="startCity" class="form-label">Ciudad de inicio
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Ciudad de inicio"
-                                            data-bs-content="Selecciona la ciudad desde la cual comenzará el recorrido. La elección de la ciudad de inicio puede influir significativamente en la ruta final y su distancia total.">
-                                            i
-                                        </button>
+                                    <label for="startCity" class="form-label">
+                                        Ciudad de inicio                                
                                     </label>
                                     <!-- show the cities -->
                                     <select v-model="tspParams.start_city" class="form-select" id="startCity"
@@ -258,12 +250,8 @@
 
                                 <!-- iterations -->
                                 <div class="mb-4 row">
-                                    <label for="iterations" class="form-label">Cantidad de iteraciones
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Cantidad de iteraciones"
-                                            data-bs-content="Número de veces que se ejecutará el algoritmo completo para buscar la mejor ruta. Repetir la ejecución puede ayudar a encontrar una mejor solución por variabilidad en la inicialización.">
-                                            i
-                                        </button>
+                                    <label for="iterations" class="form-label">
+                                        Cantidad de iteraciones
                                     </label>
                                     <input v-model="tspParams.iterations" type="number" inputmode="numeric"
                                         name="iterations" id="iterations" class="form-control"
@@ -586,12 +574,7 @@
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
 
-    <script>
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        })
-    </script>
+    
 </body>
 
 </html>
