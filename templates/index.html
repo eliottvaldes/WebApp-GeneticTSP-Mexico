@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>TSP México</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
+    <!-- VueJS CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- AXIOS -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- SweetAlert2 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js" async defer></script> -->
+    <!-- FontAwesome-->
+    <!-- <script src="https://kit.fontawesome.com/138878e8dd.js" crossorigin="anonymous"></script> -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script type="text/javascript">WebFont.load({ google: { families: ["Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic", "Varela Round:400", "Varela:400", "Ubuntu:300,300italic,400,400italic,500,500italic,700,700italic", "PT Sans:400,400italic,700,700italic", "Gothic A1:300,regular,500,600,700,800"] } });
+    </script>
+    <!--  Animate CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
+
+</head>
+
+<body>
+    <div id="app" class="container-fluid">
+        <!-- NAVBAR -->
+        <header>
+            <nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">App | TSP México </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" @click="changeTspChoosen(0)" href="#">
+                                    Ciudades
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" @click="changeTspChoosen(1)" href="#">
+                                    Aeropuertos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" @click="changeTspChoosen(2)" href="#">
+                                    Centrales de autobuses
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="mt-5">
+            <div class="py-3 mt-5">
+
+                <!-- BACKEND AVAILABILITY -->
+                <div v-if="page == 'backendNotAvailable'">
+                    <!-- header cheack backend availability -->
+                    <div class="row mb-5">
+                        <h3 class="text-center">
+                            Disponibilidad del backend
+                        </h3>
+                    </div>
+
+                    <!-- error alert no backend available -->
+                    <div class="card shadow-sm p-4 mb-5 bg-body-tertiary rounded">
+                        <div class="card-body">
+                            <div class="alert alert-danger" role="alert">
+                                <div class="text-center mb-5">
+                                    <h3 class="alert-heading ">
+                                        <strong>
+                                            <i class="fa-solid fa-triangle-exclamation mr-3"></i>
+                                            Servicio de backend no disponible
+                                            <i class="fa-solid fa-triangle-exclamation ml-3"></i>
+                                        </strong>
+                                    </h3>
+                                </div>
+                                <div class="text-justify">
+                                    <p class="mb-4">
+                                        El recurso '<i><u> {{ enviroment }} </u></i>' no se encuentra
+                                        disponible.
+                                    </p>
+                                    <hr>
+                                    <p>Puede ser que no se encuentre disponible por alguna de las siguientes razones:
+                                    </p>
+                                    <ul>
+                                        <li> Recurso inactivo o deshabilitado en la plataforma de hospedaje en la nube.
+                                        </li>
+                                        <li> Problemas de configuración de red o DNS, impidiendo el acceso al servidor.
+                                        </li>
+                                        <li> Excedido el límite de cuota de uso del servicio, como límites de ancho de
+                                            banda
+                                            o recursos de cómputo.</li>
+                                        <li> Errores de implementación de la aplicación, como configuraciones
+                                            incorrectas o
+                                            problemas en el código.</li>
+                                        <li> Problemas de mantenimiento o interrupciones del servicio en la plataforma
+                                            de
+                                            hospedaje en la nube.</li>
+                                        <li> Cuestiones de seguridad, como certificados SSL caducados o configuraciones
+                                            de
+                                            firewall restrictivas.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <button @click="checkBackendStatus()" class="float-end btn btn-outline-dark">
+                                    <i class="fas fa-refresh"></i> Volver a comprobar
+                                </button>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LOADER -->
+                <div v-if="page=='loader'" class="col-12 mb-5 animate__animated animate__bounceIn">
+                    <div class="card shadow p-3 mb-5">
+                        <div class="card-body text-center">
+                            <h3>{{ loadingMessage }}</h3>
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WELCOME PAGE -->
+                <div v-if="page=='welcomePage'">
+                    <div class="row mb-5">
+                        <h3 class="text-center">
+                            Bienvenido a la aplicación
+                        </h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card shadow p-3 mb-5">
+                                <div class="card-body text-center">
+                                    <h3>¡Bienvenido!</h3>
+                                    <p>Esta es una aplicación de ejemplo para el problema del vendedor viajero (TSP) en
+                                        México.</p>
+                                    <p>Selecciona una de las opciones del menú para comenzar.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div v-if="page=='tsp_selection'" class="row align-items-start">
+
+                    <div class="col col-md-3 col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">TSP con {{tspChoosen.name}}</h5>
+                                <hr>
+                                <p class="card-text mb-4">Ingresa los parámetros para realizar la ejecución</p>
+
+                                <!-- permutations -->
+                                <div class="mb-4 row">
+                                    <label for="permutations" class="form-label">
+                                        Cantidad de permutaciones
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill "
+                                            data-bs-toggle="popover" title="Cantidad de permutaciones"
+                                            data-bs-content="Especifica la cantidad de soluciones iniciales a generar. Un número mayor puede mejorar la calidad de la solución final pero aumentará el tiempo de cómputo.">
+                                            i
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.population_size" type="number" inputmode="numeric"
+                                        name="permutations" id="permutations" class="form-control"
+                                        aria-describedby="permutationsHelp" min="50" max="500" step="1" />
+                                </div>
+
+                                <!-- mutaion_prob -->
+                                <div class="mb-4 row">
+                                    <label for="mutationProbability" class="form-label">Probabilidad de mutación
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
+                                            data-bs-toggle="popover" title="Probabilidad de mutación"
+                                            data-bs-content="Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.01 y 0.1.">
+                                            i
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.mutation_prob" type="range" class="form-range"
+                                        name="mutationProbability" id="mutationProbability"
+                                        aria-describedby="mutationProbabilityHelp" min="0.01" max="0.1" step="0.01" />
+                                    <div id="mutationProbabilityValue" class="form-text text-center">
+                                        {{ tspParams.mutation_prob }}
+                                    </div>
+                                </div>
+
+                                <!-- generations -->
+                                <div class="mb-4 row">
+                                    <label for="generations" class="form-label">Cantidad de generaciones
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
+                                            data-bs-toggle="popover" title="Cantidad de generaciones"
+                                            data-bs-content="Indica el número total de generaciones que el algoritmo evolucionará buscando la solución óptima. Un número mayor permite una búsqueda más exhaustiva.">
+                                            i
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.generations" type="number" inputmode="numeric"
+                                        name="generations" id="generations" class="form-control"
+                                        aria-describedby="generationsHelp" min="1" max="500" step="1" />
+                                </div>
+
+                                <!-- start_city -->
+                                <div class="mb-4 row">
+                                    <label for="startCity" class="form-label">Ciudad de inicio
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
+                                            data-bs-toggle="popover" title="Ciudad de inicio"
+                                            data-bs-content="Selecciona la ciudad desde la cual comenzará el recorrido. La elección de la ciudad de inicio puede influir significativamente en la ruta final y su distancia total.">
+                                            i
+                                        </button>
+                                    </label>
+                                    <select name="startCity" id="startCity" class="form-control">
+                                        <optgroup>
+                                            <option value="1">Ciudad 1</option>
+                                            <option value="2">Ciudad 2</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <!-- iterations -->
+                                <div class="mb-4 row">
+                                    <label for="iterations" class="form-label">Cantidad de iteraciones
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
+                                            data-bs-toggle="popover" title="Cantidad de iteraciones"
+                                            data-bs-content="Número de veces que se ejecutará el algoritmo completo para buscar la mejor ruta. Repetir la ejecución puede ayudar a encontrar una mejor solución por variabilidad en la inicialización.">
+                                            i
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.iterations" type="number" inputmode="numeric"
+                                        name="iterations" id="iterations" class="form-control"
+                                        aria-describedby="iterationsHelp" min="1" max="10" step="1" />
+                                </div>
+
+                                <div class="mb-5 row">
+                                    <div class="col-auto">
+                                        <button @click="setDefaultParams()" type="button"
+                                            class="btn btn-outline-primary">
+                                            <i class="fas fa-undo"></i> Valores por defecto
+                                        </button>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <button @click="runTSP()" type="button" class="btn btn-primary">
+                                            <i class="fas fa-play"></i> Ejecutar
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- RESULTS -->
+                    <div class="col col-8">
+                        <!-- crear un .card que sea del tamaño del contenedor -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Resultados</h5>
+                                <hr>
+                                <!-- no results yet -->
+                                <div v-if="results.length==0" class="row">
+                                    <div class="col-12">
+                                        <div class="alert alert-info" role="alert">
+                                            <h4 class="alert-heading">Información</h4>
+                                            <p>Los resultados se mostrarán aquí una vez que se haya ejecutado el
+                                                algoritmo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- show results -->
+                                <div v-if="results.length>0" class="row">
+                                    <code>
+                                        {{ results }}
+                                    </code>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- VueJS App -->
+    <script>
+        const { createApp, ref } = Vue
+        createApp({
+            name: 'AppTSP',
+            data() {
+                return {
+                    loadingMessage: 'Cargando',
+                    isBtnEnabled: false,
+                    page: 'checkBackend',
+                    enviroment: null,
+                    loadingMessages: [
+                        "La inteligencia artificial (IA) puede aprender a jugar videojuegos por sí sola.",
+                        "El término 'Big Data' se refiere a conjuntos de datos tan grandes que las aplicaciones tradicionales de procesamiento de datos no pueden manejarlos.",
+                    ],
+                    tspChoosen: {
+                        id: 0,
+                        name: 'ciudades principales',
+                        key: 'cities'
+                    },
+                    tspOptions: [
+                        { id: 0, name: 'ciudades principales', key: 'cities' },
+                        { id: 1, name: 'aeropuertos', key: 'airports' },
+                        { id: 2, name: 'centrales de autobuses', key: 'bus_stations' },
+                    ],
+                    tspParams: {
+                        population_size: 100,
+                        mutation_prob: 0.05,
+                        generations: 100,
+                        iterations: 1,
+                        start_city: 4,
+                    },
+                    tspDefaultParams: {
+                        population_size: 100,
+                        mutation_prob: 0.05,
+                        generations: 100,
+                        iterations: 1,
+                        start_city: 4,
+                    },
+                    results: [],
+                }
+            },
+            mounted: async function () {
+                await this.getEnviorment();
+                await this.checkBackendStatus();
+            },
+            methods: {
+                getEnviorment: function () {
+                    const port = (window.location.port) ? `:${window.location.port}` : '';
+                    this.enviroment = `${window.location.protocol}//${window.location.hostname}${port}`;
+                    console.log(`Current enviroment: ${this.enviroment}`);
+                    // for development env
+                    this.enviroment = 'http://localhost:5000';
+                },
+                checkBackendStatus: async function () {
+                    this.page = 'loader';
+                    this.loadingMessage = 'Verificando disponibilidad del backend...';
+                    await axios.get(`${this.enviroment}/status`)
+                        .then((response) => {
+                            if (response.data.ok) {
+                                this.page = 'welcomePage';
+                            } else {
+                                this.page = 'backendNotAvailable';
+                            }
+                        }).catch((error) => {
+                            this.page = 'backendNotAvailable';
+                        }).finally(() => {
+                            this.loadingMessage = 'Cargando';
+                        });
+                },
+                createAlerts(icon, data) {
+                    const title = (icon != 'error') ? 'Success!' : 'Ups!';
+                    let html = '';
+                    data.forEach((msg) => {
+                        html += `<li>${msg}</li>`;
+                    });
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon,
+                        title,
+                        html,
+                    })
+
+                },
+                changeTspChoosen: function (tsp) {
+                    this.page = 'tsp_selection';
+                    this.tspChoosen = this.tspOptions[tsp];
+                },
+                setDefaultParams: function () {
+                    this.tspParams = { ...this.tspDefaultParams };
+                },
+                runTSP: async function () {
+                    this.results = [];
+                    console.log('Running TSP with:', this.tspParams);
+                    this.page = 'loader';
+                    this.loadingMessage = 'Ejecutando algoritmo...';
+                    await axios.post(`${this.enviroment}/api/tsp/${this.tspChoosen.key}/solve`, this.tspParams)
+                        .then((response) => {
+                            console.log(response.data);
+                            this.results = response.data.results;
+                        }).catch((error) => {
+                            this.page = 'tsp_selection';
+                        }).finally(() => {
+                            this.loadingMessage = 'Cargando';
+                            this.page = 'tsp_selection';
+                        });
+                }
+            }
+        }).mount('#app')
+    </script>
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <script>
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+    </script>
+</body>
+
+</html>
