@@ -292,9 +292,15 @@
                                 </div>
                                 <!-- show results -->
                                 <div v-if="results.length>0" class="row">
-                                    <code>
-                                        {{ results }}
-                                    </code>
+                                    <div class="row">
+                                        <code>
+                                            {{ results }}
+                                        </code>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <code> {{ data_selected }} </code>
+                                    </div>                                    
                                 </div>
                             </div>
 
@@ -348,6 +354,8 @@
                         start_city: 4,
                     },
                     results: [],
+                    data_cities: [],
+                    data_selected: []
                 }
             },
             mounted: async function () {
@@ -406,9 +414,38 @@
                 changeTspChoosen: function (tsp) {
                     this.page = 'tsp_selection';
                     this.tspChoosen = this.tspOptions[tsp];
+
+                    if (this.tspChoosen.key == 'cities')
+                    {
+                        if (this.data_cities.length == 0){
+                            this.getDataCities();
+                        }else{                            
+                            this.data_selected = [...this.data_cities];
+                        }
+
+                    }
+                    if (this.tspChoosen.key == 'airports') {
+                        this.data_selected = [];
+                    }
+                    
                 },
                 setDefaultParams: function () {
                     this.tspParams = { ...this.tspDefaultParams };
+                },
+                getDataCities: async function () {
+                    this.data_cities = [];
+                    this.page = 'loader';
+                    this.loadingMessage = 'Cargando datos de ciudades...';
+                    await axios.get(`${this.enviroment}/api/tsp/${this.tspChoosen.key}/data`)
+                        .then((response) => {
+                            console.log(response.data);
+                            this.data_cities = response.data.results;
+                        }).catch((error) => {
+                            this.page = 'error_page';
+                        }).finally(() => {
+                            this.page = 'tsp_selection';
+                            this.data_selected = [...this.data_cities];
+                        });
                 },
                 runTSP: async function () {
                     this.results = [];
