@@ -27,6 +27,10 @@
     </script>
     <!--  Animate CSS -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
 
 </head>
 
@@ -321,7 +325,17 @@
 
         </main>
 
+        <div class="container" id="plotMap" style="height: 400px;"></div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="footer mt-5 mb-3" style="margin-top: 12vh;">
+        <div class="container">
+            <span class="text-muted">Desarrollado por ~Eliot Valdes</span>
+            <span class="float-end">2024</span>
+                
+        </div>
+    </footer>
 
 
     <!-- VueJS App -->
@@ -480,44 +494,84 @@
                             this.page = 'tsp_selection';
                         });
                 },
-                createMap: function (route) {
-                    console.log('Creating map with:', route);
-                    // add the first element to the end of the array to close the route
-                    route.push(route[0]);
-                    const mapData = [];
-                    //each object in map Data has the next structure that is required by the map component
-                    route.forEach((city, index) => {
+                createMap: function (routeOriginal) {
+                    console.log('Creating map with:', routeOriginal);
+                    const route = [...routeOriginal];
+                    route.push(route[0]); // Cerramos la ruta
+                    const mapData = route.map((city, index) => {
                         const cityData = this.data_selected[city];
-                        mapData.push({
+                        return {
                             posRuta: index + 1,
                             lat: cityData.latitud,
                             lng: cityData.longitud,
                             ciudad: cityData.estado,
                             recinto: cityData.nombre_recinto,
-                            icon: (index == 0) ? 'start' : (index == route.length - 1) ? 'end' : 'waypoint'
-                        });
+                            icon: (index == 0) ? 'fas fa-map-marker-alt' : (index == route.length - 1) ? 'fas fa-flag-checkered' : 'fas fa-circle'
+                        };
                     });
-                    console.log('Map data:', mapData);
+
+                    // Seleccionar el contenedor del mapa
+                    let mapContainer = document.getElementById('plotMap');
+                    // eliminar todo dentro de mapContainer
+                    mapContainer.remove();
+                    // crear un nuevo contenedor '<div class="container" id="plotMap" style="height: 400px;"></div>'                    
+                    let newMapContainer = document.createElement('div');
+                    newMapContainer.setAttribute('id', 'plotMap');
+                    newMapContainer.setAttribute('style', 'height: 400px;');
+                    // agregar el nuevo contenedor al final del <main>
+                    document.getElementById('app').appendChild(newMapContainer);
+                    
+
+
+                    // Inicializar el mapa en el contenedor
+                    let map = L.map('plotMap').setView([mapData[0].lat, mapData[0].lng], 13);
+
+                    // Añadir la capa base del mapa
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    // Añadir marcadores con iconos FontAwesome
+                    let latLngs = [];
+                    mapData.forEach(data => {
+                        const htmlIcon = `<div style="font-size: 24px; color: blue;"><i class="${data.icon}"></i></div>`;
+                        const marker = L.marker([data.lat, data.lng], {
+                            icon: L.divIcon({
+                                html: htmlIcon,
+                                className: '', // importante quitar la clase por defecto para que no interfiera con el estilo
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30]
+                            })
+                        });
+                        marker.addTo(map).bindPopup(`${data.ciudad} - ${data.recinto}`);
+                        latLngs.push([data.lat, data.lng]);
+                    });
+
+                    // Dibujar la línea de la ruta
+                    const polyline = L.polyline(latLngs, { color: 'blue' }).addTo(map);
+                    map.fitBounds(polyline.getBounds());
                 }
+
             }
         }).mount('#app')
-    </script>
-
+                </script>
+    
     <!-- Bootstrap JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
-
+    
     <script>
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl)
         })
     </script>
-</body>
-
-</html>
+    </body>
+    
+    </html>
