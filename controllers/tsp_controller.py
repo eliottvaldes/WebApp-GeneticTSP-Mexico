@@ -105,8 +105,9 @@ def run_tsp_algorithm(configuration: dict = {})->list:
     for _ in range(iterations):
         result = hybrid_algorithm([], population_size, size_individual, int(start_city), generations, 1, mutation_prob)
         results.append({
-            'route': [city_names[city] for city in result.get('individual')],
+            'route': str(result.get('individual')),
             'distance': result.get('vof')
         })
+    
     
     return results
