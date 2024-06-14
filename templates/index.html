@@ -7,10 +7,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <!-- Bootstrap CSS v5.2.1 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-
     <!-- VueJS CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- AXIOS -->
@@ -30,11 +26,26 @@
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
 
 </head>
 
 <body>
+    <style>
+        .custom-card {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .result-container {
+            overflow-y: auto;
+        }
+    </style>
+
     <div id="app" class="container-fluid">
         <!-- NAVBAR -->
         <header style="margin-bottom: 12vh;">
@@ -71,7 +82,7 @@
 
         <main class="mt-5">
             <div class="py-3 mt-5">
-
+            
                 <!-- BACKEND AVAILABILITY -->
                 <div v-if="page == 'backendNotAvailable'">
                     <!-- header cheack backend availability -->
@@ -80,7 +91,7 @@
                             Disponibilidad del backend
                         </h3>
                     </div>
-
+            
                     <!-- error alert no backend available -->
                     <div class="card shadow-sm p-4 mb-5 bg-body-tertiary rounded">
                         <div class="card-body">
@@ -122,20 +133,20 @@
                                     </ul>
                                 </div>
                             </div>
-
+            
                             <div class="row">
                                 <button @click="checkBackendStatus()" class="float-end btn btn-outline-dark">
                                     <i class="fas fa-refresh"></i> Volver a comprobar
                                 </button>
                             </div>
-
-
-
+            
+            
+            
                         </div>
                     </div>
-
+            
                 </div>
-
+            
                 <!-- LOADER -->
                 <div v-if="page=='loader'" class="col-12 mb-5 animate__animated animate__bounceIn">
                     <div class="card shadow p-3 mb-5">
@@ -147,7 +158,7 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <!-- WELCOME PAGE -->
                 <div v-if="page=='welcomePage'">
                     <div class="row mb-5">
@@ -167,14 +178,14 @@
                             </div>
                         </div>
                     </div>
-
+            
                 </div>
-
-
+            
+            
                 <div v-if="page=='tsp_selection'" class="row align-items-start">
-
-                    <div class="col col-md-3 col-lg-3">
-                        <div class="card">
+                    <!-- PARAMS -->
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="card  custom-card">
                             <div class="card-body">
                                 <h5 class="card-title">TSP con {{tspChoosen.name}}</h5>
                                 <hr>
@@ -198,8 +209,8 @@
                                 <!-- mutaion_prob -->
                                 <div class="mb-4 row">
                                     <label for="mutationProbability" class="form-label">Probabilidad de mutación
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Probabilidad de mutación"
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill" data-bs-toggle="popover"
+                                            title="Probabilidad de mutación"
                                             data-bs-content="Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.01 y 0.1.">
                                             i
                                         </button>
@@ -215,22 +226,22 @@
                                 <!-- generations -->
                                 <div class="mb-4 row">
                                     <label for="generations" class="form-label">Cantidad de generaciones
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Cantidad de generaciones"
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill" data-bs-toggle="popover"
+                                            title="Cantidad de generaciones"
                                             data-bs-content="Indica el número total de generaciones que el algoritmo evolucionará buscando la solución óptima. Un número mayor permite una búsqueda más exhaustiva.">
                                             i
                                         </button>
                                     </label>
-                                    <input v-model="tspParams.generations" type="number" inputmode="numeric"
-                                        name="generations" id="generations" class="form-control"
-                                        aria-describedby="generationsHelp" min="1" max="500" step="1" />
+                                    <input v-model="tspParams.generations" type="number" inputmode="numeric" name="generations"
+                                        id="generations" class="form-control" aria-describedby="generationsHelp" min="1" max="500"
+                                        step="1" />
                                 </div>
 
                                 <!-- start_city -->
                                 <div class="mb-4 row">
                                     <label for="startCity" class="form-label">Ciudad de inicio
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Ciudad de inicio"
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill" data-bs-toggle="popover"
+                                            title="Ciudad de inicio"
                                             data-bs-content="Selecciona la ciudad desde la cual comenzará el recorrido. La elección de la ciudad de inicio puede influir significativamente en la ruta final y su distancia total.">
                                             i
                                         </button>
@@ -246,31 +257,30 @@
                                 <!-- iterations -->
                                 <div class="mb-4 row">
                                     <label for="iterations" class="form-label">Cantidad de iteraciones
-                                        <button type="button" class="btn btn-info btn-sm rounded-pill"
-                                            data-bs-toggle="popover" title="Cantidad de iteraciones"
+                                        <button type="button" class="btn btn-info btn-sm rounded-pill" data-bs-toggle="popover"
+                                            title="Cantidad de iteraciones"
                                             data-bs-content="Número de veces que se ejecutará el algoritmo completo para buscar la mejor ruta. Repetir la ejecución puede ayudar a encontrar una mejor solución por variabilidad en la inicialización.">
                                             i
                                         </button>
                                     </label>
-                                    <input v-model="tspParams.iterations" type="number" inputmode="numeric"
-                                        name="iterations" id="iterations" class="form-control"
-                                        aria-describedby="iterationsHelp" min="1" max="10" step="1" />
+                                    <input v-model="tspParams.iterations" type="number" inputmode="numeric" name="iterations"
+                                        id="iterations" class="form-control" aria-describedby="iterationsHelp" min="1" max="10"
+                                        step="1" />
                                 </div>
 
                                 <div class="mb-5 row">
                                     <div class="col-auto">
-                                        <button @click="setDefaultParams()" type="button"
-                                            class="btn btn-outline-primary">
+                                        <button @click="setDefaultParams()" type="button" class="btn btn-outline-primary">
                                             <i class="fas fa-undo"></i> Valores por defecto
                                         </button>
                                     </div>
-
+            
                                     <div class="col-auto">
                                         <button @click="runTSP()" type="button" class="btn btn-primary">
                                             <i class="fas fa-play"></i> Ejecutar
                                         </button>
                                     </div>
-
+            
                                 </div>
 
                             </div>
@@ -278,9 +288,9 @@
 
                     </div>
                     <!-- RESULTS -->
-                    <div class="col col-md-9 col-lg-9">
+                    <div class="col-12 col-md-9 col-lg-9">
                         <!-- crear un .card que sea del tamaño del contenedor -->
-                        <div class="card">
+                        <div class="card custom-card">
                             <div class="card-body">
                                 <h5 class="card-title">Resultados</h5>
                                 <hr>
@@ -289,38 +299,34 @@
                                     <div class="col-12">
                                         <div class="alert alert-info" role="alert">
                                             <h4 class="alert-heading">Información</h4>
-                                            <p>Los resultados se mostrarán aquí una vez que se haya ejecutado el
-                                                algoritmo.</p>
+                                            <p>Los resultados se mostrarán aquí una vez que se haya ejecutado el algoritmo.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- show results -->
-                                <div v-if="results.length>0" class="row">
+                                <div v-if="results.length>0" class="row result-container">
                                     <!-- show each result -->
                                     <div v-for="result in results" class="col-12">
                                         <div class="alert alert-success" role="alert">
                                             <h4 class="alert-heading">Resultado</h4>
-                                            <p>Distancia total: {{ result.distance }} KM</p> <br>
-                                            <p>Ruta:</p>
+                                            <p><b>Distancia total de la ruta:</b> {{ (result.distance).toFixed(2) }} km</p>
+                                            <p><b>Ruta de lugares</b></p>
                                             <p>
                                                 <span v-for="city in result.route">
-                                                    {{ data_selected[city].estado }}-{{ data_selected[city].nombre_recinto }}  ==> 
+                                                    {{ data_selected[city].estado }}-{{ data_selected[city].nombre_recinto }} ==>
                                                 </span>
                                             </p>
-
                                             <!-- btn to create map -->
                                             <button @click="createMap(result.route)" type="button" class="btn btn-primary">
                                                 <i class="fas fa-map mr-2"></i> Ver en mapa
                                             </button>
                                         </div>
                                     </div>
-                                                              
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
+            
                 </div>
 
         </main>
