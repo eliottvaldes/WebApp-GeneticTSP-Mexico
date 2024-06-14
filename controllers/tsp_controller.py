@@ -1,6 +1,6 @@
 import numpy
 from helpers.edge_recombination_algorithm import create_child
-from helpers.data_cities import distances, city_names
+from helpers.data_cities import distances
 # ==============================================================
 # ================== FUNCTIONS DEFINITION ======================
 # ==============================================================
@@ -99,7 +99,7 @@ def run_tsp_algorithm(configuration: dict = {})->list:
     generations = configuration.get('generations', 250)
     iterations = configuration.get('iterations', 1)        
     start_city = configuration.get('start_city', 4) # Mexico City   
-    size_individual = len(city_names)    
+    size_individual = len(distances)    
 
     results = []
     for _ in range(iterations):
