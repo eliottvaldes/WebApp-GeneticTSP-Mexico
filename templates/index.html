@@ -246,12 +246,14 @@
                                             i
                                         </button>
                                     </label>
-                                    <select name="startCity" id="startCity" class="form-control">
-                                        <optgroup>
-                                            <option value="1">Ciudad 1</option>
-                                            <option value="2">Ciudad 2</option>
-                                        </optgroup>
+                                    <!-- show the cities -->
+                                    <select v-model="tspParams.start_city" class="form-select" id="startCity"
+                                        aria-describedby="startCityHelp">
+                                        <option v-for="(city, index) in data_selected" :value="index">
+                                            {{ city.estado }} - {{ city.nombre_recinto }}
+                                        </option>
                                     </select>
+                                    
                                 </div>
 
                                 <!-- iterations -->
