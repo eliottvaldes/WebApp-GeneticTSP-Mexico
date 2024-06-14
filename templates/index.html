@@ -454,8 +454,14 @@
                     this.loadingMessage = 'Ejecutando algoritmo...';
                     await axios.post(`${this.enviroment}/api/tsp/${this.tspChoosen.key}/solve`, this.tspParams)
                         .then((response) => {
-                            console.log(response.data);
-                            this.results = response.data.results;
+                            const data = response.data.results;
+                            // validate if in data exist the key 'route', if true parse the route into a array
+                            if (data[0].hasOwnProperty('route')) {
+                                data.forEach((item) => {
+                                    item.route = JSON.parse(item.route);
+                                });
+                            }
+                            this.results = [...data];
                         }).catch((error) => {
                             this.page = 'tsp_selection';
                         }).finally(() => {
