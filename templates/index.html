@@ -261,14 +261,14 @@
                                 </div>
 
                                 <div class="mb-5 row">
-                                    <div class="col-auto">
+                                    <div class="col-auto mt-3">
                                         <button @click="setDefaultParams()" type="button"
                                             class="btn btn-outline-primary">
                                             <i class="fas fa-undo"></i> Valores por defecto
                                         </button>
                                     </div>
 
-                                    <div class="col-auto">
+                                    <div class="col-auto mt-3">
                                         <button @click="runTSP()" type="button" class="btn btn-primary">
                                             <i class="fas fa-play"></i> Ejecutar
                                         </button>
@@ -341,7 +341,7 @@
 
             </div>
         </main>
-
+        <hr class="my-5">
         <div class="container" id="plotMap" style="height: 400px;"></div>
     </div>
 
@@ -541,7 +541,7 @@
                     // crear un nuevo contenedor '<div class="container" id="plotMap" style="height: 400px;"></div>'                    
                     let newMapContainer = document.createElement('div');
                     newMapContainer.setAttribute('id', 'plotMap');
-                    newMapContainer.setAttribute('style', 'height: 400px;');
+                    newMapContainer.setAttribute('style', 'height: 400px; margin-top: 10vh;');                                        
                     // agregar el nuevo contenedor al final del <main>
                     document.getElementById('app').appendChild(newMapContainer);
 
@@ -574,6 +574,12 @@
                     // Dibujar la línea de la ruta
                     const polyline = L.polyline(latLngs, { color: 'blue' }).addTo(map);
                     map.fitBounds(polyline.getBounds());
+
+                    // mover la vista del mapa al centro de la ruta
+                    map.panTo(polyline.getBounds().getCenter());
+
+                    // hacer scroll en la página para mostrar el mapa
+                    window.scrollTo(0, document.body.scrollHeight);
                 }
 
             }
