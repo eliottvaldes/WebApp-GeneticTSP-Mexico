@@ -296,13 +296,18 @@
                                     <div v-for="result in results" class="col-12">
                                         <div class="alert alert-success" role="alert">
                                             <h4 class="alert-heading">Resultado</h4>
-                                            <p>Distancia total: {{ result.distance }}</p>
+                                            <p>Distancia total: {{ result.distance }} KM</p> <br>
                                             <p>Ruta:</p>
                                             <p>
                                                 <span v-for="city in result.route">
                                                     {{ data_selected[city].estado }}-{{ data_selected[city].nombre_recinto }}  ==> 
                                                 </span>
                                             </p>
+
+                                            <!-- btn to create map -->
+                                            <button @click="createMap(result.route)" type="button" class="btn btn-primary">
+                                                <i class="fas fa-map mr-2"></i> Ver en mapa
+                                            </button>
                                         </div>
                                     </div>
                                                               
@@ -474,6 +479,25 @@
                             this.loadingMessage = 'Cargando';
                             this.page = 'tsp_selection';
                         });
+                },
+                createMap: function (route) {
+                    console.log('Creating map with:', route);
+                    // add the first element to the end of the array to close the route
+                    route.push(route[0]);
+                    const mapData = [];
+                    //each object in map Data has the next structure that is required by the map component
+                    route.forEach((city, index) => {
+                        const cityData = this.data_selected[city];
+                        mapData.push({
+                            posRuta: index + 1,
+                            lat: cityData.latitud,
+                            lng: cityData.longitud,
+                            ciudad: cityData.estado,
+                            recinto: cityData.nombre_recinto,
+                            icon: (index == 0) ? 'start' : (index == route.length - 1) ? 'end' : 'waypoint'
+                        });
+                    });
+                    console.log('Map data:', mapData);
                 }
             }
         }).mount('#app')
