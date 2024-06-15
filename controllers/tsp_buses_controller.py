@@ -109,5 +109,7 @@ def run_tsp_algorithm(configuration: dict = {})->list:
             'distance': result.get('vof')
         })
     
+    #sort the results by distance. first element is the lowest distance
+    results = sorted(results, key=lambda x: x.get('distance'))
     
     return results
