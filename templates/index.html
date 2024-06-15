@@ -6,6 +6,8 @@
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- implement favico -->
+    <link rel="icon" type="image/png" href="../static/images/logo.ico" />
 
     <!-- VueJS CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -51,7 +53,11 @@
         <header style="margin-bottom: 12vh;">
             <nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
                 <div class="container-fluid">
-                    <a class="navbar-brand" @click="page='welcomePage'">App | TSP México </a>
+                    <a @click="backMainPage()" class="navbar-brand">
+                        <img src="../static/images/logo.webp" alt="Logo - GenFinder Mx" width="30" height="30"
+                            class="d-inline-block align-text-top rounded">
+                        GenFinder Mx
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -66,9 +72,10 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" @click="changeTspChoosen(1)">
+                                <!-- <a class="nav-link" @click="changeTspChoosen(1)"> -->
+                                <a class="nav-link disabled">
                                     <i :class="tspOptions[1].icon"></i>
-                                    Aeropuertos
+                                    Aeropuertos (pendiente)
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -167,30 +174,55 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <div class="card shadow p-3 mb-5">
+                            <div class="">
                                 <div class="card-body text-center">
                                     <div class="row justify-content-around">
-
+                    
                                         <div class="col col-12 col-md-4 col-lg-4 mt-3 align-self-center">
-                                            <h3>¡Bienvenido!</h3>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut eveniet porro
-                                            aliquid aspernatur nihil autem voluptas provident quod unde voluptates.
-                                            Tempore nemo eaque eos facilis tenetur! At autem quia iure.
+                                            <h3>¡Bienvenido a GenFinder Mx!</h3>
+                                            <p>Descubre la ruta más eficiente entre ciudades con nuestra aplicación web, diseñada para resolver el Problema del Agente Viajero (TSP) mediante algoritmos genéticos. Este proyecto no solo te permite seleccionar ciudades de México y encontrar el tour más corto que visite cada ciudad exactamente una vez, sino que también te muestra el recorrido sobre un mapa interactivo, con detalles como la distancia total en kilómetros.</p>
+                                            <p>Utilizando una arquitectura MVC distribuida con tecnologías de vanguardia, nuestra herramienta ofrece una experiencia de usuario interactiva y eficiente. Selecciona ciudades, resuelve el TSP y visualiza el recorrido más óptimo generado por nuestro avanzado algoritmo genético. ¡Empieza a explorar ahora!</p>                                            
                                         </div>
+                    
                                         <div class="col col-12 col-md-7 col-lg-7 mt-3">
                                             <picture>
                                                 <source srcset="../static/images/background.webp"
-                                                    type="image/svg+xml" />
+                                                    type="image/webp" /> <!-- Changed type to webp for consistency -->
                                                 <img src="../static/images/background.webp" class="img-fluid rounded"
-                                                    alt="image desc" />
+                                                    alt="Mapa interactivo del TSP en México" /> <!-- Updated alt text for better accessibility -->
                                             </picture>
-
+                                        </div>
+                    
+                                    </div>
+                                    <hr class="mt-5">
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <h4>Selecciona un tipo de problema para comenzar</h4>
+                                            <div class="row my-3">
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <button @click="changeTspChoosen(0)" type="button" class="btn btn-outline-dark">
+                                                        <i class="fas fa-building"></i> Ciudades
+                                                    </button>
+                                                </div>
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <!-- <button @click="changeTspChoosen(1)" type="button" class="btn btn-outline-dark"> -->
+                                                    <button type="button" class="btn btn-outline-dark disabled">
+                                                        <i class="fas fa-plane"></i> Aeropuertos (pendiente)
+                                                    </button>
+                                                </div>
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <button @click="changeTspChoosen(2)" type="button" class="btn btn-outline-dark">
+                                                        <i class="fas fa-bus"></i> Centrales de autobuses
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
 
                 </div>
 
@@ -365,7 +397,7 @@
     <!-- FOOTER -->
     <footer class="footer mt-5 mb-3" style="margin-top: 12vh;">
         <div class="container">
-            <span class="text-muted">Desarrollado por ~Eliot Valdes</span>
+            <span class="text-muted">Desarrollado por ~ Eliot Valdes</span>
             <span class="float-end">2024</span>
 
         </div>
@@ -719,6 +751,24 @@
                         showCloseButton: true,
                         confirmButtonText: 'Entendido',
                     });
+                },
+                backMainPage: function(){
+                    // verificar si hay elementos en el contenedor de mapa para elimianrlos
+                    let mapContainer = document.getElementById('locationMap');
+                    // si existe el contenedor del mapa, eliminarlo
+                    if (mapContainer) {
+                        mapContainer.remove();
+                    }
+
+                    mapContainer = document.getElementById('plotMap');
+                    // si existe el contenedor del mapa, eliminarlo
+                    if (mapContainer) {
+                        mapContainer.remove();
+                    }
+                    // tambien eliminar el h4
+                    document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = '';
+                    this.results = [];                                    
+                    this.page = 'welcomePage';
                 }
 
             }
