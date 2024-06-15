@@ -294,47 +294,45 @@
                         
                         <!-- RESULTS -->
                         <!-- crear un .card que sea del tamaño del contenedor -->
-                        <div v-if="results.length>0" class="card custom-card">
+
+                        <div v-if="results.length > 0" class="card custom-card">
                             <div class="card-body">
                                 <h5 class="card-title">Resultados</h5>
-                                <hr>                                
-                                <!-- show results -->
+                                <hr>
                                 <div class="row result-container">
-                                    <!-- show each result -->
-                                    <div v-for="result in results" class="col-12">
+                                    <div v-for="(result, index) in results" class="col-md-12">
                                         <div class="alert alert-success" role="alert">
                                             <h4 class="alert-heading">
-                                                <i class="fas fa-check-circle"></i>
-                                                Resultado
+                                                <i class="fas fa-check-circle"></i> Resultado {{ index + 1 }}
                                             </h4>
-                                            <p>
-                                                <b>
-                                                    <i class="fas fa-route"></i>
-                                                    Distancia total de la ruta:
-                                                </b> {{ (result.distance).toFixed(2) }} km
-                                            </p>
-                                            <p>
-                                                <b>
-                                                    <i class="fas fa-map"></i>
-                                                    Ruta de lugares
-                                                </b>
-                                            </p>
-                                            <p>
-                                                <span v-for="city in result.route">
-                                                    {{ data_selected[city].estado }}-{{
-                                                    data_selected[city].nombre_recinto }} ==>
-                                                </span>
-                                            </p>
-                                            <!-- btn to create map -->
-                                            <button @click="createMap(result.route, result.distance)" type="button"
-                                                class="btn btn-primary">
+                                            <div>
+                                                <p>
+                                                    <i class="fas fa-route mr-3"></i>
+                                                    <strong>Distancia total de la ruta:</strong>
+                                                    {{ result.distance.toFixed(2) }} km
+                                                </p>
+                                                <p>
+                                                    <i class="fas fa-map-marked-alt mr-3"></i>
+                                                    <strong>Ruta de lugares:</strong>
+                                                    <ol class="list-unstyled">
+                                                        <li v-for="(city, index) in result.route" :key="index">
+                                                            ({{index+1}}) {{ data_selected[city].estado }} - {{ data_selected[city].nombre_recinto }}
+                                                            <span v-if="index < result.route.length - 1"> &rarr; </span>
+                                                        </li>
+                                                    </ol>
+                                                </p>
+                                            </div>
+                                            <button @click="createMap(result.route, result.distance, index + 1)" type="button" class="btn btn-primary">
                                                 <i class="fas fa-map mr-2"></i> Ver en mapa
                                             </button>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
+                       
                     </div>
 
                 </div>
@@ -553,7 +551,7 @@
                             this.loadingMessage = 'Cargando';
                         });
                 },
-                createMap: function (routeOriginal, distance) {
+                createMap: function (routeOriginal, distance, index) {
                     console.log('Creating map with:', routeOriginal);
                     const route = [...routeOriginal];                    
                     const mapData = route.map((city, index) => {
@@ -580,7 +578,7 @@
                     newMapContainer.setAttribute('style', 'height: 70vh; margin-top: 5vh;');                                        
 
                     // colocar texto en el elemento h4 del contenedor id=routeMapContainer
-                    document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = 'Ruta óptima con distancia de ' + distance.toFixed(2) + ' km';
+                    document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = `Ruta óptima ${index} con distancia de ${distance.toFixed(2)} km`;
 
                     // agregar el nuevo contenedor al final del <routeMapContainer>
                     document.getElementById('routeMapContainer').appendChild(newMapContainer);
