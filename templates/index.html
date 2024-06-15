@@ -521,7 +521,6 @@
                     }
 
                     this.results = [];
-                    console.log('Running TSP with:', this.tspParams);
                     this.page = 'loader';
                     this.loadingMessage = 'Ejecutando algoritmo...';
                     await axios.post(`${this.enviroment}/api/tsp/${this.tspChoosen.key}/solve`, this.tspParams)
@@ -543,8 +542,7 @@
                 },
                 createMap: function (routeOriginal) {
                     console.log('Creating map with:', routeOriginal);
-                    const route = [...routeOriginal];
-                    route.push(route[0]); // Cerramos la ruta
+                    const route = [...routeOriginal];                    
                     const mapData = route.map((city, index) => {
                         const cityData = this.data_selected[city];
                         return {
@@ -553,7 +551,8 @@
                             lng: cityData.longitud,
                             ciudad: cityData.estado,
                             recinto: cityData.nombre_recinto,
-                            icon: (index == 0) ? 'fas fa-map-marker-alt' : (index == route.length - 1) ? 'fas fa-flag-checkered' : 'fas fa-circle'
+                            icon: (index == 0) ? 'fas fa-map-marker-alt' : (index == route.length - 1) ? 'fas fa-flag-checkered' : 'fas fa-map-pin',
+                            color: (index == 0) ? 'red' : (index == route.length - 1) ? 'red' : 'green'
                         };
                     });
 
@@ -582,7 +581,9 @@
                     // Añadir marcadores con iconos FontAwesome
                     let latLngs = [];
                     mapData.forEach(data => {
-                        const htmlIcon = `<div style="font-size: 24px; color: blue;"><i class="${data.icon}"></i></div>`;
+                        // si es el primer marcador, usar un color diferente
+                        
+                        const htmlIcon = `<div style="font-size: 30px; color: ${data.color};"><i class="${data.icon}"></i></div>`;
                         const marker = L.marker([data.lat, data.lng], {
                             icon: L.divIcon({
                                 html: htmlIcon,
@@ -591,9 +592,12 @@
                                 iconAnchor: [15, 30]
                             })
                         });
-                        marker.addTo(map).bindPopup(`${data.ciudad} - ${data.recinto}`);
+                        marker.addTo(map).bindPopup(`(${data.posRuta}) ${data.ciudad} - ${data.recinto}`);
                         latLngs.push([data.lat, data.lng]);
                     });
+
+                    // add the first marker to the end of the route
+                    latLngs.push([mapData[0].lat, mapData[0].lng]);
 
                     // Dibujar la línea de la ruta
                     const polyline = L.polyline(latLngs, { color: 'blue' }).addTo(map);
