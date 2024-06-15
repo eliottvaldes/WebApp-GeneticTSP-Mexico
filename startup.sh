@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Número de procesos de trabajo
-WORKERS=3
+WORKERS=2
 
 # Dirección y puerto de enlace
 HOST="0.0.0.0"
@@ -12,4 +12,4 @@ MODULE_NAME="app"
 VARIABLE_NAME="create_app()"
 
 # Iniciar Gunicorn
-exec gunicorn --workers=$WORKERS --bind=$HOST:$PORT $MODULE_NAME:$VARIABLE_NAME --timeout 180 --log-level=info --log-file=- --access-logfile=- --error-logfile=-
+exec gunicorn --workers=$WORKERS --bind=$HOST:$PORT $MODULE_NAME:$VARIABLE_NAME --timeout 300 --log-level=info --log-file=- --access-logfile=- --error-logfile=-
