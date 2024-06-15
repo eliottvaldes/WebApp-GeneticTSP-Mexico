@@ -343,7 +343,7 @@
             </div>
         </main>
         <hr class="my-5">
-        <div class="container" id="routeMapContainer">
+        <div id="routeMapContainer">
             <h4></h4>
             <div id="plotMap" class="row"></div>
         </div>
@@ -547,6 +547,8 @@
                             // validate if results is not empty
                             if (this.results.length < 1) {
                                 this.showLocations();
+                            }else{
+                                this.createAlerts('success', ['Ejecución del algoritmo completada con éxito.']);
                             }
                             this.loadingMessage = 'Cargando';
                         });
