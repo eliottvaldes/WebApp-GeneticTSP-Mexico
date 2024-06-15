@@ -207,7 +207,10 @@
                                 <!-- permutations -->
                                 <div class="mb-4 row">
                                     <label for="permutations" class="form-label">
-                                        Tamaño de población
+                                        Tamaño de población 
+                                        <button @click="createInfoAlert('population_size')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
                                     </label>
                                     <input v-model="tspParams.population_size" type="number" inputmode="numeric"
                                         class="form-control" min="50" max="500" step="1" />
@@ -217,6 +220,9 @@
                                 <div class="mb-4 row">
                                     <label for="mutationProbability" class="form-label">
                                         Probabilidad de mutación
+                                        <button @click="createInfoAlert('mutation_prob')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
                                     </label>
                                     <input v-model="tspParams.mutation_prob" type="range" class="form-range"
                                         name="mutationProbability" id="mutationProbability"
@@ -230,6 +236,9 @@
                                 <div class="mb-4 row">
                                     <label for="generations" class="form-label">
                                         Cantidad de generaciones
+                                        <button @click="createInfoAlert('generations')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
                                     </label>
                                     <input v-model="tspParams.generations" type="number" inputmode="numeric"
                                         name="generations" id="generations" class="form-control"
@@ -240,6 +249,9 @@
                                 <div class="mb-4 row">
                                     <label for="startCity" class="form-label">
                                         Ciudad de inicio
+                                        <button @click="createInfoAlert('start_city')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
                                     </label>
                                     <!-- show the cities -->
                                     <select v-model="tspParams.start_city" class="form-select" id="startCity"
@@ -255,6 +267,9 @@
                                 <div class="mb-4 row">
                                     <label for="iterations" class="form-label">
                                         Cantidad de iteraciones
+                                        <button @click="createInfoAlert('iterations')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
                                     </label>
                                     <input v-model="tspParams.iterations" type="number" inputmode="numeric"
                                         name="iterations" id="iterations" class="form-control"
@@ -401,7 +416,35 @@
                     data_cities: [],
                     data_selected: [],
                     data_buses: [],
+                    infoMessages: {
+                        'population_size': {
+                            'title': 'Tamaño de la población',
+                            'message': 'Especifica la cantidad de soluciones (permutaciones) iniciales a generar. Un número mayor puede mejorar la calidad de la solución final pero aumentará el tiempo de cómputo.',
+                            'range': 'El rango de valores típicos oscila entre 50 y 500.'
+                        },
+                        'mutation_prob': {
+                            'title': 'Probabilidad de mutación',
+                            'message': 'Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.01 y 0.1.',
+                            'range': 'Valores recomendados entre 0.01 (1%) y 0.1 (10%).'
+                        },
+                        'generations': {
+                            'title': 'Cantidad de generaciones',
+                            'message': 'Indica el número total de generaciones que el algoritmo evolucionará buscando la solución óptima. Un número mayor permite una búsqueda más exhaustiva.',
+                            'range': 'El rango de valores típicos puede variar entre 100 y 500, dependiendo del tamaño de la población y del problema.'
+                        },
+                        'iterations': {
+                            'title': 'Número de iteraciones',
+                            'message': 'Número de veces que se ejecutará el algoritmo completo para buscar la mejor ruta. Repetir la ejecución puede ayudar a encontrar una mejor solución por variabilidad en la inicialización.',
+                            'range': 'Generalmente, se utilizan entre 1 y 10 iteraciones para obtener resultados consistentes.'
+                        },
+                        'start_city': {
+                            'title': 'Ciudad de inicio',
+                            'message': 'Selecciona la ciudad desde la cual comenzará el recorrido. La elección de la ciudad de inicio puede influir significativamente en la ruta final y su distancia total.',
+                            'range': 'Selecciona una ciudad de la lista de ciudades disponibles en el algoritmo.'
+                        }
+                    }
                 }
+
             },
             mounted: async function () {
                 await this.getEnviorment();
@@ -665,7 +708,18 @@
 
                     });
                 }
-
+                ,
+                createInfoAlert: function(key){
+                    // show a basic info alert with icon=info and message depending on the key using infoMessages
+                    Swal.fire({
+                        icon: 'info',
+                        title: this.infoMessages[key].title,
+                        html: `<p>${this.infoMessages[key].message}</p>
+                        <p><strong>Rango de valores:</strong> ${this.infoMessages[key].range}</p>`,
+                        showCloseButton: true,
+                        confirmButtonText: 'Entendido',
+                    });
+                }
 
             }
         }).mount('#app')
