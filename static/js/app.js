@@ -399,6 +399,13 @@ const AppTSP = Vue.createApp({
             window.scrollTo(0, document.body.scrollHeight);
         },
         showLocations: async function () {
+            let mapContainer = document.getElementById('plotMap');
+            // si existe el contenedor del mapa, eliminarlo
+            if (mapContainer) {
+                mapContainer.remove();
+            }
+            // tambien eliminar el h4
+            document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = '';
             Vue.nextTick(() => {
                 let mapContainer = document.getElementById('locationMap');
                 // si existe el contenedor del mapa, eliminarlo
