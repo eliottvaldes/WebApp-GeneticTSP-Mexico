@@ -12,7 +12,7 @@
     <!-- AXIOS -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- SweetAlert2 -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js" async defer></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js" async defer></script>
     <!-- FontAwesome-->
     <script src="https://kit.fontawesome.com/138878e8dd.js" crossorigin="anonymous"></script>
     <!-- Google Fonts -->
@@ -326,7 +326,7 @@
                                                 </span>
                                             </p>
                                             <!-- btn to create map -->
-                                            <button @click="createMap(result.route)" type="button"
+                                            <button @click="createMap(result.route, result.distance)" type="button"
                                                 class="btn btn-primary">
                                                 <i class="fas fa-map mr-2"></i> Ver en mapa
                                             </button>
@@ -343,7 +343,10 @@
             </div>
         </main>
         <hr class="my-5">
-        <div class="container" id="plotMap" style="height: 400px;"></div>
+        <div class="container" id="routeMapContainer">
+            <h4></h4>
+            <div id="plotMap" class="row"></div>
+        </div>
     </div>
 
     <!-- FOOTER -->
@@ -521,6 +524,8 @@
                     if (mapContainer) {
                         mapContainer.remove();
                     }
+                    // tambien eliminar el h4
+                    document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = '';
 
                     this.results = [];
                     this.page = 'loader';
@@ -536,13 +541,17 @@
                             }
                             this.results = [...data];
                         }).catch((error) => {
-                            this.page = 'tsp_selection';
+                            this.createAlerts('error', [error.response.data.error]);
                         }).finally(() => {
-                            this.loadingMessage = 'Cargando';
                             this.page = 'tsp_selection';
+                            // validate if results is not empty
+                            if (this.results.length < 1) {
+                                this.showLocations();
+                            }
+                            this.loadingMessage = 'Cargando';
                         });
                 },
-                createMap: function (routeOriginal) {
+                createMap: function (routeOriginal, distance) {
                     console.log('Creating map with:', routeOriginal);
                     const route = [...routeOriginal];                    
                     const mapData = route.map((city, index) => {
@@ -563,12 +572,16 @@
                     if (mapContainer) {
                         mapContainer.remove();
                     }
-                    // crear un nuevo contenedor '<div class="container" id="plotMap" style="height: 400px;"></div>'                    
+                    
                     let newMapContainer = document.createElement('div');
                     newMapContainer.setAttribute('id', 'plotMap');
-                    newMapContainer.setAttribute('style', 'height: 400px; margin-top: 10vh;');                                        
-                    // agregar el nuevo contenedor al final del <main>
-                    document.getElementById('app').appendChild(newMapContainer);
+                    newMapContainer.setAttribute('style', 'height: 70vh; margin-top: 5vh;');                                        
+
+                    // colocar texto en el elemento h4 del contenedor id=routeMapContainer
+                    document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = 'Ruta óptima con distancia de ' + distance.toFixed(2) + ' km';
+
+                    // agregar el nuevo contenedor al final del <routeMapContainer>
+                    document.getElementById('routeMapContainer').appendChild(newMapContainer);
 
 
                     // Inicializar el mapa en el contenedor
