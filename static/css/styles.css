@@ -1,0 +1,139 @@
+/* Estilos base para todos los dispositivos */
+.custom-card {
+    height: 80vh;
+    overflow-y: auto;
+    margin-top: 3vh;
+}
+
+.result-container {
+    overflow-y: auto;
+}
+
+.footer {
+    line-height: 60px;
+    background-color: #f5f5f5;
+}
+
+/* Estilos para pantallas pequeñas (móviles) */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .card-body h3,
+    .card-body h4,
+    .card-body h5 {
+        font-size: 1.1rem;
+    }
+
+    .card-body p,
+    .card-body li {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .footer p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilos para pantallas medianas (tablets) */
+@media (min-width: 577px) and (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+    }
+
+    .card-body h3,
+    .card-body h4,
+    .card-body h5 {
+        font-size: 1.3rem;
+    }
+
+    .card-body p,
+    .card-body li {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .footer p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para pantallas grandes (desktops) */
+@media (min-width: 769px) and (max-width: 992px) {
+    .navbar-brand {
+        font-size: 1.8rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1.1rem;
+    }
+
+    .card-body h3,
+    .card-body h4,
+    .card-body h5 {
+        font-size: 1.5rem;
+    }
+
+    .card-body p,
+    .card-body li {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 0.75rem 1.25rem;
+    }
+
+    .footer p {
+        font-size: 1rem;
+    }
+}
+
+/* Estilos para pantallas extra grandes (desktops grandes) */
+@media (min-width: 993px) {
+    .navbar-brand {
+        font-size: 1.7rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+    }
+
+    .card-body h3,
+    .card-body h4,
+    .card-body h5 {
+        font-size: 1.7rem;
+    }
+
+    .card-body p,
+    .card-body li {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    .footer p {
+        font-size: 1rem;
+    }
+}
