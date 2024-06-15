@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <title>TSP México</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- implement favico -->
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.ico') }}" type="image/x-icon" />
+
+    <!-- VueJS CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- AXIOS -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js" async defer></script>
+    <!-- FontAwesome-->
+    <script src="https://kit.fontawesome.com/138878e8dd.js" crossorigin="anonymous"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script type="text/javascript">WebFont.load({ google: { families: ["Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic", "Varela Round:400", "Varela:400", "Ubuntu:300,300italic,400,400italic,500,500italic,700,700italic", "PT Sans:400,400italic,700,700italic", "Gothic A1:300,regular,500,600,700,800"] } });
+    </script>
+    <!--  Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+
+
+</head>
+
+<body>
+    <style>
+        .custom-card {
+            height: 80vh;
+            overflow-y: auto;
+        }
+
+        .result-container {
+            overflow-y: auto;
+        }
+    </style>
+
+    <div id="app" class="container-fluid">
+        <!-- NAVBAR -->
+        <header style="margin-bottom: 12vh;">
+            <nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
+                <div class="container-fluid">
+                    <a @click="backMainPage()" class="navbar-brand">
+                        <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="Logo - GenFinder Mx"
+                            width="30" height="30" class="d-inline-block align-text-top rounded">
+                        GenFinder Mx
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" @click="changeTspChoosen(0)">
+                                    <i :class="tspOptions[0].icon"></i>
+                                    Ciudades
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <!-- <a class="nav-link" @click="changeTspChoosen(1)"> -->
+                                <a class="nav-link disabled">
+                                    <i :class="tspOptions[1].icon"></i>
+                                    Aeropuertos (pendiente)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" @click="changeTspChoosen(2)">
+                                    <i :class="tspOptions[2].icon"></i>
+                                    Centrales de autobuses
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="mt-5">
+            <div class="py-3 mt-5">
+
+                <!-- BACKEND AVAILABILITY -->
+                <div v-if="page == 'backendNotAvailable'">
+                    <!-- header cheack backend availability -->
+                    <div class="row mb-5">
+                        <h3 class="text-center">
+                            Disponibilidad del backend
+                        </h3>
+                    </div>
+
+                    <!-- error alert no backend available -->
+                    <div class="card shadow-sm p-4 mb-5 bg-body-tertiary rounded">
+                        <div class="card-body">
+                            <div class="alert alert-danger" role="alert">
+                                <div class="text-center mb-5">
+                                    <h3 class="alert-heading ">
+                                        <strong>
+                                            <i class="fa-solid fa-triangle-exclamation mr-3"></i>
+                                            Servicio de backend no disponible
+                                            <i class="fa-solid fa-triangle-exclamation ml-3"></i>
+                                        </strong>
+                                    </h3>
+                                </div>
+                                <div class="text-justify">
+                                    <p class="mb-4">
+                                        El recurso '<i><u> {% raw %}{{ enviroment }}{% endraw %} </u></i>' no se encuentra
+                                        disponible.
+                                    </p>
+                                    <hr>
+                                    <p>Puede ser que no se encuentre disponible por alguna de las siguientes razones:
+                                    </p>
+                                    <ul>
+                                        <li> Recurso inactivo o deshabilitado en la plataforma de hospedaje en la nube.
+                                        </li>
+                                        <li> Problemas de configuración de red o DNS, impidiendo el acceso al servidor.
+                                        </li>
+                                        <li> Excedido el límite de cuota de uso del servicio, como límites de ancho de
+                                            banda
+                                            o recursos de cómputo.</li>
+                                        <li> Errores de implementación de la aplicación, como configuraciones
+                                            incorrectas o
+                                            problemas en el código.</li>
+                                        <li> Problemas de mantenimiento o interrupciones del servicio en la plataforma
+                                            de
+                                            hospedaje en la nube.</li>
+                                        <li> Cuestiones de seguridad, como certificados SSL caducados o configuraciones
+                                            de
+                                            firewall restrictivas.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <button @click="checkBackendStatus()" class="float-end btn btn-outline-dark">
+                                    <i class="fas fa-refresh"></i> Volver a comprobar
+                                </button>
+                            </div>
+
+                          
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LOADER -->
+                <div v-if="page=='loader'" class="col-12  mb-5 animate__animated animate__bounceIn">
+                    <div class="card shadow p-3">
+                        <div class="card-body text-center">
+                            <!-- LOADER ANIMATION -->
+                            <div class="spinner-border text-primary my-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <!-- LOADER MESSAGES -->
+                            <h3>{% raw %}{{ loadingMessage }}{% endraw %}</h3>
+                            <hr class="my-4">
+                            <div class="my-5">
+                                <h3>{% raw %}{{ currentLoadingMessage }}{% endraw %}</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WELCOME PAGE -->
+                <div v-if="page=='welcomePage'">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="">
+                                <div class="card-body text-center">
+                                    <!-- GENERAL PAGE INFO -->
+                                    <div class="row justify-content-around">
+
+                                        <div class="col col-12 col-md-4 col-lg-4 mt-3 align-self-center">
+                                            <h3>¡Bienvenido a GenFinder Mx!</h3>
+                                            <p>Descubre la ruta más eficiente entre ciudades con nuestra aplicación web,
+                                                diseñada para resolver el Problema del Agente Viajero (TSP) mediante
+                                                algoritmos genéticos. Este proyecto no solo te permite seleccionar
+                                                ciudades de México y encontrar el tour más corto que visite cada ciudad
+                                                exactamente una vez, sino que también te muestra el recorrido sobre un
+                                                mapa interactivo, con detalles como la distancia total en kilómetros.
+                                            </p>
+                                            <p>Utilizando una arquitectura MVC distribuida con tecnologías de
+                                                vanguardia, nuestra herramienta ofrece una experiencia de usuario
+                                                interactiva y eficiente. Selecciona ciudades, resuelve el TSP y
+                                                visualiza el recorrido más óptimo generado por nuestro avanzado
+                                                algoritmo genético. ¡Empieza a explorar ahora!</p>
+                                        </div>
+
+                                        <div class="col col-12 col-md-7 col-lg-7 mt-3">
+                                            <picture>
+                                                <source
+                                                    srcset="{{ url_for('static', filename='images/background.webp') }}"
+                                                    type="image/webp" />
+                                                <!-- Changed type to webp for consistency -->
+                                                <img src="{{ url_for('static', filename='images/background.webp') }}"
+                                                    class="img-fluid rounded"
+                                                    alt="Mapa interactivo del TSP en México" />
+                                                <!-- Updated alt text for better accessibility -->
+                                            </picture>
+                                        </div>
+
+                                    </div>
+                                    <hr class="mt-5">
+                                    <!-- TSP SELECTION MODE -->
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <h4>Selecciona un tipo de problema para comenzar</h4>
+                                            <div class="row my-3">
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <button @click="changeTspChoosen(0)" type="button"
+                                                        class="btn btn-outline-dark">
+                                                        <i class="fas fa-building"></i> Ciudades
+                                                    </button>
+                                                </div>
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <!-- <button @click="changeTspChoosen(1)" type="button" class="btn btn-outline-dark"> -->
+                                                    <button type="button" class="btn btn-outline-dark disabled">
+                                                        <i class="fas fa-plane"></i> Aeropuertos (pendiente)
+                                                    </button>
+                                                </div>
+                                                <div class="col-12 col-md-4 col-lg-4 my-3">
+                                                    <button @click="changeTspChoosen(2)" type="button"
+                                                        class="btn btn-outline-dark">
+                                                        <i class="fas fa-bus"></i> Centrales de autobuses
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TSP PAGE -->
+                <div v-if="page=='tsp_selection'" class="row align-items-start animate__animated animate__bounceInLeft">
+                    <!-- PARAMS -->
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <div class="card  custom-card">
+                            <div class="card-body">
+                                <h5 class="card-title">TSP con {% raw %}{{tspChoosen.name}}{% endraw %} <i :class="tspChoosen.icon"></i></h5>
+                                <hr>
+                                <p class="card-text mb-4">Ingresa los parámetros para realizar la ejecución</p>
+
+                                <!-- permutations -->
+                                <div class="mb-4 row">
+                                    <label for="permutations" class="form-label">
+                                        Tamaño de población
+                                        <button @click="createInfoAlert('population_size')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.population_size" type="number" inputmode="numeric"
+                                        class="form-control" min="50" max="500" step="1" />
+                                </div>
+
+                                <!-- mutaion_prob -->
+                                <div class="mb-4 row">
+                                    <label for="mutationProbability" class="form-label">
+                                        Probabilidad de mutación
+                                        <button @click="createInfoAlert('mutation_prob')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.mutation_prob" type="range" class="form-range"
+                                        name="mutationProbability" id="mutationProbability"
+                                        aria-describedby="mutationProbabilityHelp" min="0.01" max="0.1" step="0.01" />
+                                    <div id="mutationProbabilityValue" class="form-text text-center">
+                                        {% raw %}{{ tspParams.mutation_prob }}{% endraw %}
+                                    </div>
+                                </div>
+
+                                <!-- generations -->
+                                <div class="mb-4 row">
+                                    <label for="generations" class="form-label">
+                                        Cantidad de generaciones
+                                        <button @click="createInfoAlert('generations')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.generations" type="number" inputmode="numeric"
+                                        name="generations" id="generations" class="form-control"
+                                        aria-describedby="generationsHelp" min="1" max="500" step="1" />
+                                </div>
+
+                                <!-- start_city -->
+                                <div class="mb-4 row">
+                                    <label for="startCity" class="form-label">
+                                        Ciudad de inicio
+                                        <button @click="createInfoAlert('start_city')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
+                                    </label>
+                                    <!-- show the cities -->
+                                    <select v-model="tspParams.start_city" class="form-select" id="startCity"
+                                        aria-describedby="startCityHelp">
+                                        <option v-for="(city, index) in data_selected" :value="index">
+                                            {% raw %}{{ city.estado }}{% endraw %} - {% raw %}{{ city.nombre_recinto }}{% endraw %}
+                                        </option>
+                                    </select>
+
+                                </div>
+
+                                <!-- iterations -->
+                                <div class="mb-4 row">
+                                    <label for="iterations" class="form-label">
+                                        Cantidad de iteraciones
+                                        <button @click="createInfoAlert('iterations')" class="btn btn-sm rounded">
+                                            <i class="fas fa-info-circle ml-3"></i>
+                                        </button>
+                                    </label>
+                                    <input v-model="tspParams.iterations" type="number" inputmode="numeric"
+                                        name="iterations" id="iterations" class="form-control"
+                                        aria-describedby="iterationsHelp" min="1" max="10" step="1" />
+                                </div>
+
+                                <div class="mb-5 row">
+                                    <div class="col-auto mt-3">
+                                        <button @click="setDefaultParams()" type="button" class="btn btn-outline-dark">
+                                            <i class="fas fa-undo"></i> Valores por defecto
+                                        </button>
+                                    </div>
+
+                                    <div class="col-auto mt-3">
+                                        <button @click="runTSP()" type="button" class="btn btn-dark">
+                                            <i class="fas fa-play"></i> Ejecutar
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-9 col-lg-9">
+                        <!-- LOCATION MAP -->
+                        <div v-show="results.length==0" class="card custom-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Mapa indicando las localidades ({% raw %}{{ tspChoosen.name }}{% endraw %}) </h5>
+                                <hr>
+                                <div id="locationContainer">
+                                    <div id="locationMap"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RESULTS -->
+                        <!-- crear un .card que sea del tamaño del contenedor -->
+
+                        <div v-if="results.length > 0" class="card custom-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Resultados</h5>
+                                <hr>
+                                <div class="row result-container">
+                                    <div v-for="(result, index) in results" class="col-md-12">
+                                        <div class="alert alert-success" role="alert">
+                                            <h4 class="alert-heading">
+                                                <i class="fas fa-check-circle"></i> Resultado {% raw %}{{ index + 1 }}{% endraw %}
+                                            </h4>
+                                            <div>
+                                                <p>
+                                                    <i class="fas fa-route mr-3"></i>
+                                                    <strong>Distancia total de la ruta:</strong>
+                                                    {% raw %}{{ result.distance.toFixed(2) }}{% endraw %} km
+                                                </p>
+                                                <p>
+                                                    <i class="fas fa-map-marked-alt mr-3"></i>
+                                                    <strong>Ruta de lugares:</strong>
+                                                <ol class="list-unstyled">
+                                                    <li v-for="(city, index) in result.route" :key="index">
+                                                        ({% raw %}{{index+1}}{% endraw %}) {% raw %}{{ data_selected[city].estado }}{% endraw %} - {% raw %}{{
+                                                        data_selected[city].nombre_recinto }}{% endraw %}
+                                                        <span v-if="index < result.route.length - 1"> &rarr; </span>
+                                                    </li>
+                                                </ol>
+                                                </p>
+                                            </div>
+                                            <button @click="createMap(result.route, result.distance, index + 1)"
+                                                type="button" class="btn btn-dark">
+                                                <i class="fas fa-map mr-2"></i> Ver en mapa
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+
+        <hr class="my-5">
+
+        <!-- ROUTES MAP -->
+        <div id="routeMapContainer">
+            <h4></h4>
+            <div id="plotMap" class="row"></div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer mt-5 mb-3" style="margin-top: 12vh;">
+        <div class="container">
+            <span class="text-muted">Desarrollado por ~ Eliot Valdes</span>
+            <span class="float-end">2024</span>
+
+        </div>
+    </footer>
+
+
+    <!-- Vue app -->
+    <script src="{{ url_for('static', filename='js/app.js') }}" async defer></script>
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
