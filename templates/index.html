@@ -65,10 +65,10 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <!-- <a class="nav-link" @click="changeTspChoosen(1)"> -->
-                                <a class="nav-link disabled">
+                                <a class="nav-link" @click="changeTspChoosen(1)">
+                                <!-- <a class="nav-link disabled"> -->
                                     <i :class="tspOptions[1].icon"></i>
-                                    Aeropuertos (pendiente)
+                                    Aeropuertos
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -221,9 +221,9 @@
                                                     </button>
                                                 </div>
                                                 <div class="col-12 col-md-4 col-lg-4 my-3">
-                                                    <!-- <button @click="changeTspChoosen(1)" type="button" class="btn btn-outline-dark"> -->
-                                                    <button type="button" class="btn btn-outline-dark disabled">
-                                                        <i class="fas fa-plane"></i> Aeropuertos (pendiente)
+                                                    <button @click="changeTspChoosen(1)" type="button" class="btn btn-outline-dark">
+                                                    <!-- <button type="button" class="btn btn-outline-dark disabled"> -->
+                                                        <i class="fas fa-plane"></i> Aeropuertos
                                                     </button>
                                                 </div>
                                                 <div class="col-12 col-md-4 col-lg-4 my-3">
@@ -273,7 +273,7 @@
                                     </label>
                                     <input v-model="tspParams.mutation_prob" type="range" class="form-range"
                                         name="mutationProbability" id="mutationProbability"
-                                        aria-describedby="mutationProbabilityHelp" min="0.01" max="0.1" step="0.01" />
+                                        aria-describedby="mutationProbabilityHelp" min="0.00" max="0.1" step="0.01" />
                                     <div id="mutationProbabilityValue" class="form-text text-center">
                                         {% raw %}{{ tspParams.mutation_prob }}{% endraw %}
                                     </div>
@@ -313,7 +313,7 @@
                                 <!-- iterations -->
                                 <div class="mb-4 row">
                                     <label for="iterations" class="form-label">
-                                        Cantidad de iteraciones
+                                        Cantidad de ejecuciones
                                         <button @click="createInfoAlert('iterations')" class="btn btn-sm rounded">
                                             <i class="fas fa-info-circle ml-3"></i>
                                         </button>
