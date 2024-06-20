@@ -122,15 +122,15 @@ const AppTSP = Vue.createApp({
             ],
             tspParams: {
                 population_size: 50,
-                mutation_prob: 0.01,
+                mutation_prob: 0.00,
                 generations: 10,
                 iterations: 1,
                 start_city: 4,
             },
             tspDefaultParams: {
-                population_size: 350,
-                mutation_prob: 0.05,
-                generations: 200,
+                population_size: 450,
+                mutation_prob: 0.03,
+                generations: 250,
                 iterations: 1,
                 start_city: 4,
             },
@@ -138,6 +138,7 @@ const AppTSP = Vue.createApp({
             data_cities: [],
             data_selected: [],
             data_buses: [],
+            data_airports: [],
             infoMessages: {
                 'population_size': {
                     'title': 'Tamaño de la población',
@@ -146,7 +147,7 @@ const AppTSP = Vue.createApp({
                 },
                 'mutation_prob': {
                     'title': 'Probabilidad de mutación',
-                    'message': 'Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.01 y 0.1.',
+                    'message': 'Define la probabilidad de que una solución sufra mutaciones aleatorias en cada generación. Valores típicos oscilan entre 0.00 y 0.1.',
                     'range': 'Valores recomendados entre 0.01 (1%) y 0.1 (10%).'
                 },
                 'generations': {
@@ -155,9 +156,9 @@ const AppTSP = Vue.createApp({
                     'range': 'El rango de valores típicos puede variar entre 100 y 500, dependiendo del tamaño de la población y del problema.'
                 },
                 'iterations': {
-                    'title': 'Número de iteraciones',
+                    'title': 'Número de ejecuciones',
                     'message': 'Número de veces que se ejecutará el algoritmo completo para buscar la mejor ruta. Repetir la ejecución puede ayudar a encontrar una mejor solución por variabilidad en la inicialización.',
-                    'range': 'Generalmente, se utilizan entre 1 y 10 iteraciones para obtener resultados consistentes.'
+                    'range': 'Generalmente, se utilizan entre 1 y 10 ejecuciones para obtener resultados consistentes.'
                 },
                 'start_city': {
                     'title': 'Ciudad de inicio',
@@ -236,8 +237,12 @@ const AppTSP = Vue.createApp({
                     this.data_selected = await [...this.data_cities];
                 }
             }
-            if (this.tspChoosen.key == 'airports') {
-                this.data_selected = [];
+            if (await this.tspChoosen.key == 'airports') {
+                if (this.data_airports.length == 0) {
+                    await this.getDataAirports();
+                } else {
+                    this.data_selected = await [...this.data_airports];
+                }
             }
 
             if (await this.tspChoosen.key == 'buses') {
@@ -285,6 +290,23 @@ const AppTSP = Vue.createApp({
                 }).finally(() => {
                     this.page = 'tsp_selection';
                     this.data_selected = [...this.data_buses];
+                    this.showAleatoryMessages = false;
+                });
+        },
+        getDataAirports: async function () {
+            this.data_airports = [];
+            this.loadingMessage = 'Cargando datos de aeropuertos...';
+            this.page = 'loader';
+            this.showAleatoryMessages = true;
+            this.cycleMessages();
+            await axios.get(`${this.enviroment}/api/tsp/${this.tspChoosen.key}/data`)
+                .then((response) => {
+                    this.data_airports = response.data.results;
+                }).catch((error) => {
+                    this.page = 'error_page';
+                }).finally(() => {
+                    this.page = 'tsp_selection';
+                    this.data_selected = [...this.data_airports];
                     this.showAleatoryMessages = false;
                 });
         },
@@ -399,13 +421,6 @@ const AppTSP = Vue.createApp({
             window.scrollTo(0, document.body.scrollHeight);
         },
         showLocations: async function () {
-            let mapContainer = document.getElementById('plotMap');
-            // si existe el contenedor del mapa, eliminarlo
-            if (mapContainer) {
-                mapContainer.remove();
-            }
-            // tambien eliminar el h4
-            document.getElementById('routeMapContainer').getElementsByTagName('h4')[0].innerText = '';
             Vue.nextTick(() => {
                 let mapContainer = document.getElementById('locationMap');
                 // si existe el contenedor del mapa, eliminarlo
