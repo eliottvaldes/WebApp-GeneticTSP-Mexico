@@ -9,11 +9,13 @@ def create_app():
     from routes.base_routes import base_routes
     from routes.tsp.cities_routes import tsp_cities
     from routes.tsp.buses_routes import tsp_buses
+    from routes.tsp.airports_routes import tsp_airports
     
     # register the blueprints
     app.register_blueprint(base_routes)
     app.register_blueprint(tsp_cities, url_prefix='/api/tsp/cities')
     app.register_blueprint(tsp_buses, url_prefix='/api/tsp/buses')
+    app.register_blueprint(tsp_airports, url_prefix='/api/tsp/airports')
     
     # enable debug mode
     app.debug = True
